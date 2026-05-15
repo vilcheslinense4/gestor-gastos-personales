@@ -34,13 +34,16 @@ function addTransactionDOM(transaction) {
   const sign = transaction.amount < 0 ? '-' : '+';
   const item = document.createElement('li');
   item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
+  
   item.innerHTML = `
     <div>
       <strong>${transaction.text}</strong> <br>
       <small style="color: #aaa; font-size: 0.7rem;">${transaction.date}</small>
     </div>
-    <span>${sign}${Math.abs(transaction.amount)}€</span>
-    <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>
+    <div class="list-info">
+      <span>${sign}${Math.abs(transaction.amount)}€</span>
+      <button class="delete-btn" onclick="removeTransaction(${transaction.id})">Borrar</button>
+    </div>
   `;
   list.appendChild(item);
 }
