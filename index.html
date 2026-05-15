@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Gastos Personales</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <a href="https://vilcheslinense4.github.io/Mi-primer-portafolios/" class="btn-volver">← Volver al Portafolio</a>
+        </nav>
+
+        <h1>Control de Gastos</h1>
+
+        <div class="balance-container">
+            <h4>Tu Saldo Actual</h4>
+            <h1 id="balance">0.00€</h1>
+        </div>
+
+        <div class="inc-exp-container">
+            <div>
+                <h4>Ingresos</h4>
+                <p id="money-plus" class="money plus">+0.00€</p>
+            </div>
+            <div>
+                <h4>Gastos</h4>
+                <p id="money-minus" class="money minus">-0.00€</p>
+            </div>
+        </div>
+
+        <h3>Historial de Movimientos</h3>
+        <ul id="list" class="list">
+            </ul>
+
+        <h3>Añadir nuevo movimiento</h3>
+        <form id="form">
+            <div class="form-control">
+                <label for="text">Concepto</label>
+                <input type="text" id="text" placeholder="Ej: Cena, Sueldo, Gasolina..." required />
+            </div>
+            <div class="form-control">
+                <label for="amount">Cantidad <br> (negativo = gasto, positivo = ingreso)</label>
+                <input type="number" step="0.01" id="amount" placeholder="Ej: -20 o 500" required />
+            </div>
+            <button class="btn">Añadir Movimiento</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
