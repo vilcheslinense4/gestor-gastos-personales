@@ -5,98 +5,94 @@ const list = document.getElementById('list');
 const form = document.getElementById('form');
 const text = document.getElementById('text');
 const amount = document.getElementById('amount');
+const monthFilter = document.getElementById('month-filter');
 
-// 1. Obtener datos de LocalStorage
-const localStorageTransactions = JSON.parse(
-  localStorage.getItem('transactions')
-);
-
-// Si hay algo guardado, lo carga; si no, empieza con una lista vacía
+const localStorageTransactions = JSON.parse(localStorage.getItem('transactions'));
 let transactions = localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 
-// 2. Añadir nueva transacción
 function addTransaction(e) {
   e.preventDefault();
-
   if (text.value.trim() === '' || amount.value.trim() === '') {
-    alert('Por favor, añade un concepto y una cantidad');
+    alert('Añade concepto y cantidad');
   } else {
     const transaction = {
       id: generateID(),
       text: text.value,
-      amount: +amount.value // El + lo convierte de texto a número
+      amount: +amount.value,
+      date: new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
     };
-
     transactions.push(transaction);
-    addTransactionDOM(transaction);
-    updateValues();
-    updateLocalStorage();
-
+    updateUI();
     text.value = '';
     amount.value = '';
   }
 }
 
-// 3. Generar ID aleatorio
-function generateID() {
-  return Math.floor(Math.random() * 100000000);
-}
+function generateID() { return Math.floor(Math.random() * 100000000); }
 
-// 4. Mostrar la transacción en la lista (HTML)
 function addTransactionDOM(transaction) {
   const sign = transaction.amount < 0 ? '-' : '+';
   const item = document.createElement('li');
-
-  // Añadir clase basada en el valor (positivo o negativo)
   item.classList.add(transaction.amount < 0 ? 'minus' : 'plus');
-
   item.innerHTML = `
-    ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}€</span>
+    <div>
+      <strong>${transaction.text}</strong> <br>
+      <small style="color: #aaa; font-size: 0.7rem;">${transaction.date}</small>
+    </div>
+    <span>${sign}${Math.abs(transaction.amount)}€</span>
     <button class="delete-btn" onclick="removeTransaction(${transaction.id})">x</button>
   `;
-
   list.appendChild(item);
 }
 
-// 5. Actualizar el saldo, ingresos y gastos
 function updateValues() {
   const amounts = transactions.map(t => t.amount);
-
   const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
-
-  const income = amounts
-    .filter(item => item > 0)
-    .reduce((acc, item) => (acc += item), 0)
-    .toFixed(2);
-
-  const expense = (
-    amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1
-  ).toFixed(2);
+  const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
+  const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
 
   balance.innerText = `${total}€`;
   money_plus.innerText = `+${income}€`;
   money_minus.innerText = `-${expense}€`;
 }
 
-// 6. Eliminar transacción por ID
 function removeTransaction(id) {
   transactions = transactions.filter(t => t.id !== id);
-  updateLocalStorage();
-  init();
+  updateUI();
 }
 
-// 7. Actualizar LocalStorage
 function updateLocalStorage() {
   localStorage.setItem('transactions', JSON.stringify(transactions));
 }
 
-// 8. Inicializar la App
-function init() {
-  list.innerHTML = '';
-  transactions.forEach(addTransactionDOM);
-  updateValues();
+function fillFilter() {
+  const currentSelection = monthFilter.value;
+  const months = [...new Set(transactions.map(t => t.date))];
+  monthFilter.innerHTML = '<option value="all">Todos los meses</option>';
+  months.forEach(month => {
+    const option = document.createElement('option');
+    option.value = month;
+    option.text = month;
+    monthFilter.appendChild(option);
+  });
+  monthFilter.value = currentSelection;
 }
 
-init();
+function updateUI() {
+  list.innerHTML = '';
+  const filterValue = monthFilter.value;
+  const filtered = filterValue === 'all' 
+    ? transactions 
+    : transactions.filter(t => t.date === filterValue);
+  
+  filtered.forEach(addTransactionDOM);
+  updateValues();
+  updateLocalStorage();
+  fillFilter();
+}
 
+monthFilter.addEventListener('change', updateUI);
 form.addEventListener('submit', addTransaction);
+
+// Inicializar
+updateUI();
