@@ -31,7 +31,13 @@
             </div>
         </div>
 
-        <h3>Historial de Movimientos</h3>
+        <div class="header-list">
+            <h3>Historial</h3>
+            <select id="month-filter">
+                <option value="all">Todos los meses</option>
+                </select>
+        </div>
+
         <ul id="list" class="list">
             </ul>
 
@@ -42,7 +48,7 @@
                 <input type="text" id="text" placeholder="Ej: Cena, Sueldo, Gasolina..." required />
             </div>
             <div class="form-control">
-                <label for="amount">Cantidad <br> (negativo = gasto, positivo = ingreso)</label>
+                <label for="amount">Cantidad (negativo = gasto, positivo = ingreso)</label>
                 <input type="number" step="0.01" id="amount" placeholder="Ej: -20 o 500" required />
             </div>
             <button class="btn">Añadir Movimiento</button>
